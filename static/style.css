@@ -299,7 +299,7 @@ section { margin-top: 34px; }
   border-radius: 999px;
   white-space: nowrap;
 }
-.src-badge.kontract {
+.src-badge.theme {
   color: #076b38;
   border: 1.5px solid var(--civo);
   background: rgba(0, 255, 111, 0.1);

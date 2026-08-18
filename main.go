@@ -1,4 +1,4 @@
-// Command kontract-theme-beach-club serves the Beach Club kontract theme: a
+// Command theme-beach-club serves the Beach Club theme theme: a
 // static frontend (embedded) plus a JSON proxy under /api/gc/ that reads live
 // observability data from the groundcover API. There is no sample fallback —
 // no data beats fake data; unconfigured installs answer honestly with 503.

@@ -84,14 +84,14 @@
       </div>
     </div>
 
-    <!-- ============ PLANE 1 · YOUR ZONES & BOARDS (kontract spec) ============ -->
+    <!-- ============ PLANE 1 · YOUR ZONES & BOARDS (theme spec) ============ -->
     <section aria-labelledby="h-beaches">
       <div class="sec-head">
         <h2 id="h-beaches">Beaches &amp; Boards</h2>
-        <span class="src-badge kontract">kontract · spec</span>
+        <span class="src-badge theme">theme · spec</span>
         <span class="what">your zones &amp; apps as Konstruct knows them</span>
         <span class="spacer"></span>
-        <span class="what" id="kontract-mode"></span>
+        <span class="what" id="theme-mode"></span>
       </div>
       <div class="beaches" id="beaches"></div>
       <div class="panel" style="overflow-x:auto">
@@ -103,15 +103,15 @@
           </thead>
           <tbody></tbody>
         </table>
-        <p class="tbl-note">status · size · break are <b>kontract spec</b>; metered cpu · mem are <b>kontract metered</b> (the platform's VictoriaMetrics); cpu · req/s · errors are <b>groundcover measured</b> (eBPF) — the same workload from both instruments, side by side. Click a board for its full telemetry.</p>
+        <p class="tbl-note">status · size · break are <b>theme spec</b>; metered cpu · mem are <b>theme metered</b> (the platform's VictoriaMetrics); cpu · req/s · errors are <b>groundcover measured</b> (eBPF) — the same workload from both instruments, side by side. Click a board for its full telemetry.</p>
       </div>
     </section>
 
-    <!-- ============ PLANE 1½ · BOARD TELEMETRY (kontract metered, correlates with zone waters) ============ -->
+    <!-- ============ PLANE 1½ · BOARD TELEMETRY (theme metered, correlates with zone waters) ============ -->
     <section aria-labelledby="h-boardtel" id="board-telemetry" hidden>
       <div class="sec-head">
         <h2 id="h-boardtel">Board Telemetry · <span id="btel-name">–</span></h2>
-        <span class="src-badge kontract">kontract · metered</span>
+        <span class="src-badge theme">theme · metered</span>
         <span class="what">VictoriaMetrics series for this board — line them up with Zone Waters and the Swell Gauges below to correlate metered vs measured</span>
         <span class="spacer"></span>
         <button class="gc-link" id="btel-close" type="button">close ×</button>
@@ -138,7 +138,7 @@
       </div>
       <div class="sec-head" style="margin-top:10px">
         <h2 style="font-size:15px">Board Radio</h2>
-        <span class="src-badge kontract">kontract · live</span>
+        <span class="src-badge theme">theme · live</span>
         <span class="what">runtime log lines streamed from this board's pods · <span id="btel-logstate">tuning…</span></span>
       </div>
       <div class="panel feed" id="btel-radio"></div>
@@ -245,7 +245,7 @@
     </section>
 
     <footer>
-      <span>a kontract theme · informational · surf responsibly</span>
+      <span>a theme theme · informational · surf responsibly</span>
       <span class="tagline">relax — your cloud's covered · observability with no limits</span>
       <span class="spacer"></span>
       <span>powered by <a href="https://www.civo.com" target="_blank" rel="noopener">civo</a>
@@ -262,7 +262,7 @@
     </div>
   </div>
 
-  <script src="kontract.js"></script>
+  <script src="theme.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

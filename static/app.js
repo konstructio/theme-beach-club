@@ -1,11 +1,11 @@
 /* Beach Club — the shore report for your cluster.
  *
  * Three data planes, kept visibly separate:
- *   1. kontract · spec       — zones & apps as Konstruct declares them (kontract.js)
- *   2. groundcover · zones   — measured signals inside kontract-* namespaces (/api/gc/zone-workloads)
+ *   1. theme · spec       — zones & apps as Konstruct declares them (theme.js)
+ *   2. groundcover · zones   — measured signals inside theme-* namespaces (/api/gc/zone-workloads)
  *   3. groundcover · control — the control plane cluster itself (/api/gc/*)
  * The theme user cares about plane 1 first, plane 3 second; plane 2 correlates
- * the two by namespace (kontract-<org…>-<zone>) and says so honestly when the
+ * the two by namespace (theme-<org…>-<zone>) and says so honestly when the
  * zone clusters have no agent yet.
  *
  * No credential ever reaches the browser. Every API-derived string is rendered
@@ -26,7 +26,7 @@
     zones: [],
     quota: null,
     lastApps: [],
-    vm: new Map(), // app name -> { cpu:[[t,v]…], mem, rx, tx } from kontract.metrics
+    vm: new Map(), // app name -> { cpu:[[t,v]…], mem, rx, tx } from theme.metrics
     selected: null,
     logSub: null,
     evtSub: null,
@@ -457,7 +457,7 @@
     }
   }
 
-  // ---------- plane 1: kontract beaches & boards ----------
+  // ---------- plane 1: theme beaches & boards ----------
 
 
   function parseQty(q) {
@@ -471,9 +471,9 @@
     return v;
   }
 
-  // ---------- plane 1½: kontract metered telemetry (VictoriaMetrics) ----------
+  // ---------- plane 1½: theme metered telemetry (VictoriaMetrics) ----------
 
-  // kontract metric points are {t,v} objects; renderChart eats [t,v] tuples.
+  // theme metric points are {t,v} objects; renderChart eats [t,v] tuples.
   const vmTuples = (m, name) => {
     const ser = ((m && m.series) || []).find((x) => x.name === name);
     return ((ser && ser.points) || [])
@@ -511,7 +511,7 @@
       const name = a.name || a.app_name;
       if (!name || (a.phase !== "Live" && a.phase !== "Failed")) continue;
       try {
-        const m = await kontract.metrics(state.org, name, { range: state.range, step: vmStep() });
+        const m = await theme.metrics(state.org, name, { range: state.range, step: vmStep() });
         state.vm.set(a.app_name || name, {
           cpu: vmTuples(m, "cpu"), mem: vmTuples(m, "memory"),
           rx: vmTuples(m, "network_rx"), tx: vmTuples(m, "network_tx"),
@@ -543,12 +543,12 @@
     const radio = $("#btel-radio");
     radio.textContent = "";
     const logState = $("#btel-logstate");
-    if (!state.caps.includes("runtime-logs") || typeof kontract.logs !== "function") {
+    if (!state.caps.includes("runtime-logs") || typeof theme.logs !== "function") {
       logState.textContent = "not broadcast on this install";
       return;
     }
     logState.textContent = "receiving";
-    state.logSub = kontract.logs(state.org, app.name || app.app_name, (l) => {
+    state.logSub = theme.logs(state.org, app.name || app.app_name, (l) => {
       radio.appendChild(boardRadioLine(l));
       while (radio.childElementCount > 60) radio.removeChild(radio.firstChild);
       radio.scrollTop = radio.scrollHeight;
@@ -701,7 +701,7 @@
     return wrapEl;
   }
 
-  // matchZoneWorkload finds the measured zone workload for a kontract app:
+  // matchZoneWorkload finds the measured zone workload for a theme app:
   // namespace must end in -<zone_ref> and workload/app names must overlap.
   function matchZoneWorkload(app, zoneWorkloads) {
     return zoneWorkloads.find((zw) =>
@@ -743,7 +743,7 @@
         brk.textContent = "–";
       }
 
-      // metered columns — kontract (VictoriaMetrics), the platform's own meter
+      // metered columns — theme (VictoriaMetrics), the platform's own meter
       const vm = state.vm.get(a.app_name);
       if (vm && vm.cpu.length) {
         cell(tr, fmtCores(vmLast(vm.cpu) || 0), "num");
@@ -792,9 +792,9 @@
     setTimeout(() => { state.shipMomentShown = false; }, 30000);
   }
 
-  async function loadKontract() {
-    const modeEl = $("#kontract-mode");
-    if (!kontract.isLaunched()) {
+  async function loadTheme() {
+    const modeEl = $("#theme-mode");
+    if (!theme.isLaunched()) {
       modeEl.textContent = "no org context";
       renderNoOrg("You are viewing the theme directly, so there is no organization to read. " +
         "Launch Beach Club from Konstruct and this section becomes your real zones and apps. " +
@@ -805,14 +805,14 @@
     state.org = org;
     try {
       // discover first — render only what the platform declares (spec rule 5)
-      const disco = await kontract.discover(org);
+      const disco = await theme.discover(org);
       const caps = (disco && disco.capabilities) || [];
       state.caps = caps;
       const wantZones = !caps.length || caps.includes("zones");
       const [zones, apps, quota] = await Promise.all([
-        wantZones ? kontract.zones(org) : Promise.resolve([]),
-        kontract.apps(org),
-        caps.includes("quota") && typeof kontract.quota === "function" ? kontract.quota(org).catch(() => null) : Promise.resolve(null),
+        wantZones ? theme.zones(org) : Promise.resolve([]),
+        theme.apps(org),
+        caps.includes("quota") && typeof theme.quota === "function" ? theme.quota(org).catch(() => null) : Promise.resolve(null),
       ]);
       modeEl.textContent = "org · " + org;
       state.zones = Array.isArray(zones) ? zones : [];
@@ -820,8 +820,8 @@
       renderZones(state.zones, renderOrgTide(quota));
       return { apps: Array.isArray(apps) ? apps : [], demo: false };
     } catch (err) {
-      modeEl.textContent = "kontract unavailable";
-      renderNoOrg("Couldn't reach the kontract: " + (err && err.message || err) + ". " +
+      modeEl.textContent = "theme unavailable";
+      renderNoOrg("Couldn't reach the theme: " + (err && err.message || err) + ". " +
         "Nothing is mocked in its place — reload, or launch again from Konstruct.");
       return { apps: [], demo: true };
     }
@@ -899,8 +899,8 @@
 
   async function refresh() {
     // Plane 1 first — the user's boards lead the page.
-    const k = await loadKontract();
-    // normalize: real kontract apps carry status.phase; samples carry phase
+    const k = await loadTheme();
+    // normalize: real theme apps carry status.phase; samples carry phase
     for (const a of k.apps) if (!a.phase) a.phase = a.status && a.status.phase;
     state.lastApps = k.apps;
     if (!k.demo) {
@@ -986,8 +986,8 @@
     await refresh();
     // push-driven refresh when the platform supports it; the 30s poll stays
     // as the fallback heartbeat either way
-    if (kontract.isLaunched() && typeof kontract.appEvents === "function") {
-      try { state.evtSub = kontract.appEvents(state.org, () => refresh().catch(() => {}), () => { state.evtSub = null; }); } catch (e) {}
+    if (theme.isLaunched() && typeof theme.appEvents === "function") {
+      try { state.evtSub = theme.appEvents(state.org, () => refresh().catch(() => {}), () => { state.evtSub = null; }); } catch (e) {}
     }
     setInterval(refresh, 30000);
   }

@@ -1,5 +1,5 @@
 /*
- * kontract.js — the whole client contract in one small file. Copy it, keep it.
+ * theme.js — the whole client contract in one small file. Copy it, keep it.
  *
  * Your theme never sees a credential. When launched from Konstruct it runs in
  * a sandboxed iframe and sends each operation to the platform window over
@@ -9,7 +9,7 @@
  * or sample-data mode.
  */
 
-const kontract = (() => {
+const theme = (() => {
   const embedded = window.parent !== window;
   const pending = new Map();
   const streams = new Map();
@@ -18,7 +18,7 @@ const kontract = (() => {
   window.addEventListener("message", (event) => {
     const m = event.data;
     if (!m) return;
-    if (m.type === "kontract-rpc-result" && pending.has(m.id)) {
+    if (m.type === "theme-rpc-result" && pending.has(m.id)) {
       const { resolve, reject, timer } = pending.get(m.id);
       pending.delete(m.id);
       clearTimeout(timer);
@@ -27,7 +27,7 @@ const kontract = (() => {
       } else {
         reject(Object.assign(new Error(m.error || "request failed"), { status: m.status }));
       }
-    } else if (m.type === "kontract-stream-event" && streams.has(m.id)) {
+    } else if (m.type === "theme-stream-event" && streams.has(m.id)) {
       let payload = m.data;
       try {
         payload = JSON.parse(m.data);
@@ -35,7 +35,7 @@ const kontract = (() => {
         /* raw line */
       }
       streams.get(m.id).onEvent(payload);
-    } else if (m.type === "kontract-stream-close" && streams.has(m.id)) {
+    } else if (m.type === "theme-stream-close" && streams.has(m.id)) {
       const s = streams.get(m.id);
       streams.delete(m.id);
       if (s.onClose) s.onClose(m.reason);
@@ -49,12 +49,12 @@ const kontract = (() => {
     return new Promise((resolve, reject) => {
       const id = ++seq;
       const timer = setTimeout(() => {
-        if (pending.delete(id)) reject(new Error("kontract: request timed out"));
+        if (pending.delete(id)) reject(new Error("theme: request timed out"));
       }, 20000);
       pending.set(id, { resolve, reject, timer });
       // The request carries no secrets, so "*" is safe here; the platform
       // replies with targetOrigin pinned to this theme's origin.
-      window.parent.postMessage({ type: "kontract-rpc", id, op, args }, "*");
+      window.parent.postMessage({ type: "theme-rpc", id, op, args }, "*");
     });
   }
 
@@ -64,10 +64,10 @@ const kontract = (() => {
     if (!embedded) return () => {};
     const id = ++seq;
     streams.set(id, { onEvent, onClose });
-    window.parent.postMessage({ type: "kontract-stream-open", id, op, args }, "*");
+    window.parent.postMessage({ type: "theme-stream-open", id, op, args }, "*");
     return () => {
       if (streams.delete(id)) {
-        window.parent.postMessage({ type: "kontract-stream-close", id }, "*");
+        window.parent.postMessage({ type: "theme-stream-close", id }, "*");
       }
     };
   }
@@ -80,6 +80,8 @@ const kontract = (() => {
     zones: (org) => call("zones", org),
     createZone: (org, zone) => call("createZone", org, zone),
     deleteZone: (org, name) => call("deleteZone", org, name),
+    regions: (org) => call("regions", org),
+    deployments: (org, name) => call("deployments", org, name),
     apps: (org) => call("apps", org),
     appRepos: (org) => call("appRepos", org),
     shipApp: (app) => call("shipApp", app),

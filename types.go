@@ -109,9 +109,9 @@ type LogsResponse struct {
 	Logs []LogEntry `json:"logs"`
 }
 
-// ZoneWorkload is one measured workload running in a kontract zone namespace.
-// Zone is parsed from the namespace suffix (kontract-<org...>-<zone>); the
-// frontend correlates it against the kontract zone list.
+// ZoneWorkload is one measured workload running in a theme zone namespace.
+// Zone is parsed from the namespace suffix (theme-<org...>-<zone>); the
+// frontend correlates it against the theme zone list.
 type ZoneWorkload struct {
 	Name         string  `json:"name"`
 	Namespace    string  `json:"namespace"`
@@ -127,7 +127,7 @@ type ZoneWorkload struct {
 }
 
 // ZoneWorkloadsResponse is returned by GET /api/gc/zone-workloads.
-// AgentCoverage is false when no kontract-* namespace reports metrics — i.e.
+// AgentCoverage is false when no theme-* namespace reports metrics — i.e.
 // the zone workload clusters have no groundcover agent yet.
 type ZoneWorkloadsResponse struct {
 	AgentCoverage bool           `json:"agentCoverage"`
