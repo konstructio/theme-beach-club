@@ -160,7 +160,7 @@ func (s *server) handleWorkloads(w http.ResponseWriter, r *http.Request) {
 	s.render(w, r, "workloads", "workloads", nil, s.buildWorkloads)
 }
 
-// handleZoneWorkloads returns measured workloads inside kontract zone
+// handleZoneWorkloads returns measured workloads inside theme zone
 // namespaces, across every cluster reporting to the backend — deliberately not
 // pinned to GC_CLUSTER, because zone workloads run on shared-pool clusters that
 // report (or will report) under their own cluster names.
@@ -366,11 +366,11 @@ func (s *server) buildWorkloads(ctx context.Context) (any, error) {
 	return WorkloadsResponse{Workloads: workloads}, nil
 }
 
-// zoneSel selects kontract zone namespaces across ALL clusters.
-const zoneSel = `{namespace=~"kontract-.*"}`
+// zoneSel selects theme zone namespaces across ALL clusters.
+const zoneSel = `{namespace=~"theme-.*"}`
 
 // buildZoneWorkloads assembles per-workload usage and golden signals for every
-// workload in a kontract-* namespace, on any reporting cluster. The base set
+// workload in a theme-* namespace, on any reporting cluster. The base set
 // comes from container CPU (every running container reports it); traffic
 // signals enrich it best-effort.
 func (s *server) buildZoneWorkloads(ctx context.Context) (any, error) {
@@ -406,9 +406,9 @@ func (s *server) buildZoneWorkloads(ctx context.Context) (any, error) {
 				w.ErrorRatePct = round(v/w.RPS*100, 2)
 			}
 		})
-	s.mergeZone(ctx, byKey, `avg by (workload, namespace) (groundcover_resource_latency_seconds{namespace=~"kontract-.*",quantile="0.5"})`,
+	s.mergeZone(ctx, byKey, `avg by (workload, namespace) (groundcover_resource_latency_seconds{namespace=~"theme-.*",quantile="0.5"})`,
 		func(w *ZoneWorkload, v float64) { w.P50Ms = round(v*1000, 1) })
-	s.mergeZone(ctx, byKey, `avg by (workload, namespace) (groundcover_resource_latency_seconds{namespace=~"kontract-.*",quantile="0.95"})`,
+	s.mergeZone(ctx, byKey, `avg by (workload, namespace) (groundcover_resource_latency_seconds{namespace=~"theme-.*",quantile="0.95"})`,
 		func(w *ZoneWorkload, v float64) { w.P95Ms = round(v*1000, 1) })
 	s.mergeZone(ctx, byKey, `sum by (workload, namespace) (increase(groundcover_container_restart_count_total`+zoneSel+`[`+restartsWindow+`]))`,
 		func(w *ZoneWorkload, v float64) { w.Restarts = int(v) })
@@ -448,8 +448,8 @@ func (s *server) mergeZone(ctx context.Context, byKey map[string]*ZoneWorkload, 
 	}
 }
 
-// zoneFromNamespace parses the zone name from a kontract namespace
-// (kontract-<org...>-<zone> → <zone>). Best-effort: the frontend treats it as
+// zoneFromNamespace parses the zone name from a theme namespace
+// (theme-<org...>-<zone> → <zone>). Best-effort: the frontend treats it as
 // a correlation hint, not truth.
 func zoneFromNamespace(ns string) string {
 	for i := len(ns) - 1; i >= 0; i-- {

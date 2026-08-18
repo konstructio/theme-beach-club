@@ -1,6 +1,6 @@
 # Beach Club
 
-The shore report for your cluster. A [kontract theme](https://konstruct.civo.com/docs/next/konduit)
+The shore report for your cluster. A [theme theme](https://konstruct.civo.com/docs/next/konduit)
 for [Konstruct](https://konstruct.civo.com) that pairs zone/app data from the
 platform with deep Kubernetes observability from
 [groundcover](https://groundcover.civo.io) — eBPF golden signals, cluster
@@ -19,7 +19,7 @@ issues and failed pods.
 | The Lineup | per-workload latency, error rate, traffic | groundcover eBPF APM |
 | Wipeout Log | issues and warning events | groundcover events |
 | Beach Patrol | recent error/warning logs | groundcover logs |
-| Beaches & Boards | zones and apps as beaches and surfboards | kontract v2 |
+| Beaches & Boards | zones and apps as beaches and surfboards | theme v2 |
 
 Every panel deeplinks into the groundcover UI at `GROUNDCOVER_UI_URL`.
 
@@ -63,6 +63,6 @@ GROUNDCOVER_API_KEY=<key> go run ./cmd/capture
 
 Register this repository as a theme in Konstruct Settings, then set
 `GROUNDCOVER_API_KEY` (and `GC_CLUSTER` if different) in the theme's
-environment. `static/kontract.js` is copied byte-for-byte from
-[kontract-theme-starter](https://github.com/konstructio/kontract-theme-starter)
+environment. `static/theme.js` is copied byte-for-byte from
+[theme-starter](https://github.com/konstructio/theme-starter)
 and is verified at registration — never edit it.

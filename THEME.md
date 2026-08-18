@@ -1,4 +1,4 @@
-# KONTRACT
+# THEME
 version: v2
 theme: beach-club
 capabilities: [apps, zones, quota, runtime-logs, app-events]
@@ -10,7 +10,7 @@ vocabulary:
 ## The contract (v2 — postMessage transport)
 
 Beach Club is an informational theme: it reads zones and apps through
-`kontract.js` (byte-for-byte from the starter; never edited) and renders them
+`theme.js` (byte-for-byte from the starter; never edited) and renders them
 as beaches and boards. It performs no writes.
 
 Everything else on the page — cluster health, golden signals, events, and
@@ -22,7 +22,7 @@ API-derived string with `textContent`.
 - Launched from Konstruct: sandboxed iframe, org from the query string,
   operations over postMessage. No token, no fragment, nothing in
   sessionStorage.
-- Opened directly (`kontract.isLaunched()` is false): the theme renders its
+- Opened directly (`theme.isLaunched()` is false): the theme renders its
   demo tide pool — sample beaches and boards — and the groundcover panels
   serve captured sample data when no API key is configured.
 

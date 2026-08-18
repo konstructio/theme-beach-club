@@ -1,3 +1,3 @@
-module github.com/konstructio/kontract-theme-beach-club
+module github.com/konstructio/theme-beach-club
 
 go 1.23
